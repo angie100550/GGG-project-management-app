@@ -40,7 +40,6 @@ CREATE TABLE projects (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- When the project was last updated
     FOREIGN KEY (created_by) REFERENCES users(user_id) ON DELETE CASCADE
 );
-
 -- Tasks Table
 CREATE TABLE tasks (
     task_id SERIAL PRIMARY KEY,        -- Unique task ID
@@ -63,8 +62,10 @@ CREATE TABLE attachments (
     task_id INT NOT NULL,               -- Foreign key to tasks table
     file_url VARCHAR(255) NOT NULL,      -- URL to the file
     file_name VARCHAR(255) NOT NULL,     -- Name of the file
+    uploaded_by INT NOT NULL,            -- Foreign key to users table (who uploaded the file)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- When the attachment was added
-    FOREIGN KEY (task_id) REFERENCES tasks(task_id) ON DELETE CASCADE
+    FOREIGN KEY (task_id) REFERENCES tasks(task_id) ON DELETE CASCADE,
+    FOREIGN KEY (uploaded_by) REFERENCES users(user_id) ON DELETE CASCADE
 );
 
 -- Messaging Table (to store messages between users)
