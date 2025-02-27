@@ -1,12 +1,15 @@
-import {pg} from "pg"
-import {env} from "./env"
+import {Client} from "pg"
+import dotenv from "dotenv"
 
-const db = new pgClient({
-    user: env.PG_USER,
-    host: env.PG_HOST,
-    database: env.PG_DATABASE,
-    password: env.PG_PASSWORD,
-    port: env.PG_PORT
+
+dotenv.config();
+
+const db = new Client({
+    user: process.env.PG_USER,
+    host: process.env.PG_HOST,
+    database: process.env.PG_DATABASE,
+    password: process.env.PG_PASSWORD,
+    port: process.env.PG_PORT ? parseInt(process.env.PG_PORT, 10) : undefined
 });
 
 export default db;
