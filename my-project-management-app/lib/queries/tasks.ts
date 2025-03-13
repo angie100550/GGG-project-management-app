@@ -1,42 +1,131 @@
-import db from "../db"
+import db from '../db'; // Import the database connection
+import { tasks } from '../database-schema/schema'; // Import the tasks schema
+import { eq } from 'drizzle-orm/expressions'; // Import the eq function
 
-const getAllTasks = async () => {
+// Define the TaskData interface
+interface TaskData {
+    task_name: string; // Name of the task
+    description?: string; // Optional description
+    project_id: number; // ID of the project
+    assigned_to?: string; // Optional assigned to
+    priority?: string; // Optional priority
+    due_date?: Date; // Optional due date
+    status?: string; // Optional status
+}
+
+// Get all tasks
+export const getAllTasks = async () => {
     try {
-        const tasks = await db.query('SELECT task_id, task_name, project_id FROM tasks');
-        return tasks;
+        const taskList = await db.select().from(tasks).execute();
+        return taskList;
     } catch (error) {
         console.error('Error fetching tasks:', error);
         throw new Error('Could not retrieve tasks.');
     }
 }
 
-const getTask = async (tid: number) => {
+// Get a single task by task_id
+export const getTaskById = async (taskId: number) => {
     try {
-        const tasks = await db.query(`SELECT task_id, task_name, project_id FROM tasks WHERE task_id = ${tid}`);
-        return tasks;
+        const task = await db
+            .select()
+            .from(tasks)
+            .where(eq(tasks.task_id, taskId)) // Use the eq function for comparison
+            .execute();
+        return task[0]; // Return the first task found
     } catch (error) {
         console.error('Error fetching task:', error);
         throw new Error('Could not retrieve task.');
     }
 }
 
-const createTask = async (task_name: string, description: string, project_id: string, assigned_to: number) => {
+// Create a new task
+export const createTask = async (taskData: TaskData) => {
     try {
-        const tasks = await db.query(`INSERT INTO tasks (task_name, description, project_id, full_name)
-                                      VALUES (${task_name}, ${description}, ${project_id}, ${project_id}, ${assigned_to})`);
-        return tasks;
+        const task = await db.insert(tasks).values(taskData);
+        return task;
     } catch (error) {
         console.error('Error creating task:', error);
-        throw new Error('Could not create tasks.');
+        throw new Error('Could not create task.');
     }
 }
 
-const deleteTask = async (tid: number) => {
+// Update an existing task
+export const updateTask = async (taskId: number, taskData: TaskData) => {
     try {
-        const tasks = await db.query(`DELETE FROM tasks WHERE task_id = ${tid}`);
-        return tasks;
+        const updatedTask = await db
+            .update(tasks)
+            .set(taskData)
+            .where(eq(tasks.task_id, taskId)) // Use the eq function for comparison
+            .execute();
+        return updatedTask;
     } catch (error) {
-        console.error('Error deleting task:', error);
-        throw new Error('Could not delete tasks.');
+        console.error('Error updating task:', error);
+        throw new Error('Could not update task.');
     }
 }
+
+// Delete a task
+export const deleteTask = async (taskId: number) => {
+    try {
+        await db.delete(tasks).where(eq(tasks.task_id, taskId)).execute();
+    } catch (error) {
+        console.error('Error deleting task:', error);
+        throw new Error('Could not delete task.');
+    }
+}
+
+// Get tasks by project_id
+export const getTasksByProjectId = async (projectId: number) => {
+    try {
+        const taskList = await db.select().from(tasks).where(eq(tasks.project_id, projectId)).execute();   
+        return taskList;
+    } catch (error) {
+        console.error('Error fetching tasks:', error);
+        throw new Error('Could not retrieve tasks.');
+    }
+}
+
+// Get tasks by user_id
+export const getTasksByUserId = async (userId: string) => {
+    try {
+        const taskList = await db.select().from(tasks).where(eq(tasks.assigned_to, userId)).execute();
+        return taskList;
+    } catch (error) {
+        console.error('Error fetching tasks:', error);
+        throw new Error('Could not retrieve tasks.');
+    }
+}
+
+// Get tasks by status
+export const getTasksByStatus = async (status: string) => {
+    try {
+        const taskList = await db.select().from(tasks).where(eq(tasks.status, status)).execute();
+        return taskList;
+    } catch (error) {
+        console.error('Error fetching tasks:', error);
+        throw new Error('Could not retrieve tasks.');
+    }
+}
+
+// Get tasks by priority
+export const getTasksByPriority = async (priority: string) => {
+    try {
+        const taskList = await db.select().from(tasks).where(eq(tasks.priority, priority)).execute();
+        return taskList;
+    } catch (error) {
+        console.error('Error fetching tasks:', error);
+        throw new Error('Could not retrieve tasks.');
+    }
+}
+
+// Get tasks by due_date
+export const getTasksByDueDate = async (dueDate: Date) => {
+    try {
+        const taskList = await db.select().from(tasks).where(eq(tasks.due_date, dueDate)).execute();
+        return taskList;
+    } catch (error) {
+        console.error('Error fetching tasks:', error);
+        throw new Error('Could not retrieve tasks.');
+    }
+}   
