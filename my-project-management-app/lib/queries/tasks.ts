@@ -71,61 +71,6 @@ export const deleteTask = async (taskId: number) => {
         await db.delete(tasks).where(eq(tasks.task_id, taskId)).execute();
     } catch (error) {
         console.error('Error deleting task:', error);
-        throw new Error('Could not delete task.');
+        throw new Error('Could not delete tasks.');
     }
 }
-
-// Get tasks by project_id
-export const getTasksByProjectId = async (projectId: number) => {
-    try {
-        const taskList = await db.select().from(tasks).where(eq(tasks.project_id, projectId)).execute();   
-        return taskList;
-    } catch (error) {
-        console.error('Error fetching tasks:', error);
-        throw new Error('Could not retrieve tasks.');
-    }
-}
-
-// Get tasks by user_id
-export const getTasksByUserId = async (userId: string) => {
-    try {
-        const taskList = await db.select().from(tasks).where(eq(tasks.assigned_to, userId)).execute();
-        return taskList;
-    } catch (error) {
-        console.error('Error fetching tasks:', error);
-        throw new Error('Could not retrieve tasks.');
-    }
-}
-
-// Get tasks by status
-export const getTasksByStatus = async (status: string) => {
-    try {
-        const taskList = await db.select().from(tasks).where(eq(tasks.status, status)).execute();
-        return taskList;
-    } catch (error) {
-        console.error('Error fetching tasks:', error);
-        throw new Error('Could not retrieve tasks.');
-    }
-}
-
-// Get tasks by priority
-export const getTasksByPriority = async (priority: string) => {
-    try {
-        const taskList = await db.select().from(tasks).where(eq(tasks.priority, priority)).execute();
-        return taskList;
-    } catch (error) {
-        console.error('Error fetching tasks:', error);
-        throw new Error('Could not retrieve tasks.');
-    }
-}
-
-// Get tasks by due_date
-export const getTasksByDueDate = async (dueDate: Date) => {
-    try {
-        const taskList = await db.select().from(tasks).where(eq(tasks.due_date, dueDate)).execute();
-        return taskList;
-    } catch (error) {
-        console.error('Error fetching tasks:', error);
-        throw new Error('Could not retrieve tasks.');
-    }
-}   
